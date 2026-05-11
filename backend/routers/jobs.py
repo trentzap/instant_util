@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List, Optional
 from pydantic import BaseModel
-from ..database import get_session
-from ..models import JobRequest, User
-from ..utils.auth import get_current_user
+from database import get_session
+from models import JobRequest, User
+from utils.auth import get_current_user
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 

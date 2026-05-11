@@ -5,8 +5,8 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session
-from ..database import get_session
-from ..models import User
+from database import get_session
+from models import User
 
 # Settings
 SECRET_KEY = os.getenv("SECRET_KEY", "super-secret-key-for-development-only")

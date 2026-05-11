@@ -1,6 +1,6 @@
 import os
 from sqlmodel import SQLModel, create_engine, Session
-from . import models  # Important: import models before calling create_all
+import models  # Important: import models before calling create_all
 
 # You can use a PostgreSQL URL here, e.g. "postgresql://user:password@localhost:5432/instant_utilities"
 # For immediate local testing without Docker, SQLite is configured as a quick fallback if DB_URL isn't set.

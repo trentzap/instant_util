@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from typing import Optional
-from ..database import get_session
-from ..models import User, Facility
-from ..utils.auth import get_password_hash, verify_password, create_access_token
+from database import get_session
+from models import User, Facility
+from utils.auth import get_password_hash, verify_password, create_access_token
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
