@@ -29,7 +29,7 @@ def on_startup():
     create_db_and_tables()
 
 # Include Routers
-app.include_router(auth.router, prefix="/auth")
+app.include_router(auth.router)
 app.include_router(jobs.router)
 app.include_router(quotes.router)
 app.include_router(admin.router, prefix="/admin")

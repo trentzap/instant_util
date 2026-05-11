@@ -38,6 +38,8 @@ export default function LoginPage() {
         router.push('/manager');
       } else if (data.user.role === 'resident') {
         router.push('/resident');
+      } else if (data.user.role === 'admin') {
+        router.push('/admin');
       } else {
         router.push('/');
       }
