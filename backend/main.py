@@ -6,7 +6,7 @@ import os
 from sqlmodel import Session
 from .database import create_db_and_tables, get_session
 from .routers import jobs, auth, quotes
-from .websockets import manager
+from .ws_manager import manager
 from .models import SosAlert
 from .utils.auth import get_current_user
 
