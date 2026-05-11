@@ -1,31 +1,62 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Avatar } from '../ui/Avatar';
 import { JobRequest } from './JobManager';
+import { API_URL } from '@/lib/config';
 
 interface Quote {
-  id: string;
-  contractorName: string;
+  id: number;
+  contractor_id: number;
   price: number;
   eta: string;
   note: string;
+  status: string;
 }
 
-const MOCK_QUOTES: Quote[] = [
-  { id: 'quote_1', contractorName: 'ABC Plumbing', price: 150, eta: 'Today, 2:00 PM', note: 'Can fix the leak within an hour.' },
-  { id: 'quote_2', contractorName: 'Express Pipes', price: 120, eta: 'Tomorrow Morning', note: 'Includes replacement parts if needed.' },
-];
+export function ContractorDispatch({ job, onBack, getAuthHeaders }: { job: JobRequest, onBack: () => void, getAuthHeaders: () => Record<string, string> }) {
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export function ContractorDispatch({ job, onBack }: { job: JobRequest, onBack: () => void }) {
-  const awardJobToContractor = (jobId: string, quoteId: string) => {
-    // Placeholder function for FastAPI integration
-    console.log(`🏆 AWARDED JOB ${jobId} TO QUOTE ${quoteId}`);
-    alert(`Job awarded successfully!`);
-    onBack();
+  useEffect(() => {
+    const fetchQuotes = async () => {
+      try {
+        const response = await fetch(`${API_URL}/quotes/job/${job.id}`, {
+          headers: getAuthHeaders()
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setQuotes(data);
+        }
+      } catch (error) {
+        console.error("Error fetching quotes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchQuotes();
+  }, [job.id, getAuthHeaders]);
+
+  const awardJobToContractor = async (jobId: number, quoteId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/quotes/${quoteId}/accept`, {
+        method: 'POST',
+        headers: getAuthHeaders(),
+      });
+
+      if (response.ok) {
+        alert("Contractor Dispatched Successfully!");
+        onBack(); // Go back to the job list which will refresh and show it dispatched
+      } else {
+        console.error("Failed to award job");
+        alert("Failed to award job");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -51,28 +82,33 @@ export function ContractorDispatch({ job, onBack }: { job: JobRequest, onBack: (
       <div className="mt-2">
         <div className="text-[12px] font-bold text-[var(--text3)] uppercase tracking-wide mb-3">Received Quotes</div>
         
-        {MOCK_QUOTES.length === 0 ? (
+        {loading ? (
+          <div className="text-center p-6 text-[12px] text-[var(--text3)]">Loading quotes...</div>
+        ) : quotes.length === 0 ? (
           <div className="text-center p-6 text-[12px] text-[var(--text3)]">Waiting for contractors to submit quotes...</div>
         ) : (
-          MOCK_QUOTES.map(quote => (
+          quotes.map(quote => (
             <Card key={quote.id} className="mb-3">
               <div className="flex justify-between items-center mb-3">
                 <div className="flex items-center gap-2">
-                  <Avatar initials={quote.contractorName.substring(0, 2).toUpperCase()} className="w-6 h-6 text-[10px] bg-[var(--bg)] border-[var(--border2)]" />
-                  <div className="text-[13px] font-bold text-[var(--text)]">{quote.contractorName}</div>
+                  <Avatar initials="CO" className="w-6 h-6 text-[10px] bg-[var(--bg)] border-[var(--border2)]" />
+                  <div className="text-[13px] font-bold text-[var(--text)]">Contractor #{quote.contractor_id}</div>
                 </div>
                 <div className="text-[14px] font-bold text-[var(--brand-green)]">${quote.price}</div>
               </div>
               
               <div className="flex items-center gap-2 mb-2">
                 <Badge color="blue">🕐 {quote.eta}</Badge>
+                {quote.status === 'accepted' && <Badge color="green">ACCEPTED</Badge>}
               </div>
               
               <div className="text-[11px] text-[var(--text2)] italic mb-4">"{quote.note}"</div>
               
-              <Button variant="full-dark" onClick={() => awardJobToContractor(job.id, quote.id)}>
-                Award Job to {quote.contractorName}
-              </Button>
+              {quote.status === 'pending' && (
+                <Button variant="full-dark" onClick={() => awardJobToContractor(job.id!, quote.id)}>
+                  Award Job to Contractor
+                </Button>
+              )}
             </Card>
           ))
         )}

@@ -70,7 +70,14 @@ export default function ManagerDashboard() {
         {/* Dynamic Dispatch Area */}
         <div className="bg-[var(--bg)] p-1 rounded-[var(--radius-lg)]">
           {selectedJob ? (
-            <ContractorDispatch job={selectedJob} onBack={() => setSelectedJob(null)} />
+            <ContractorDispatch 
+              job={selectedJob} 
+              onBack={() => setSelectedJob(null)} 
+              getAuthHeaders={() => ({
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+              })}
+            />
           ) : (
             <JobManager onSelectJob={setSelectedJob} />
           )}
