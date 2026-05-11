@@ -21,7 +21,7 @@ export function SosTapAlert({ isOpen, onClose }: SosTapAlertProps) {
 
   useEffect(() => {
     const token = getToken();
-    const wsUrl = \`\${WS_URL}/ws/sos/1\${token ? \`?token=\${token}\` : ''}\`;
+    const wsUrl = `${WS_URL}/ws/sos/1${token ? `?token=${token}` : ''}`;
     const ws = new WebSocket(wsUrl);
     socketRef.current = ws;
 

@@ -16,7 +16,7 @@ export function AlertReceiver() {
 
   useEffect(() => {
     const token = getToken();
-    const wsUrl = \`\${WS_URL}/ws/sos/1\${token ? \`?token=\${token}\` : ''}\`;
+    const wsUrl = `${WS_URL}/ws/sos/1${token ? `?token=${token}` : ''}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => console.log('✅ SOS Receiver Connected');

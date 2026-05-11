@@ -35,7 +35,7 @@ export function Marketplace() {
 
   const fetchJobs = async () => {
     try {
-      const res = await fetch(\`\${API_URL}/quotes/marketplace/jobs\`, {
+      const res = await fetch(`${API_URL}/quotes/marketplace/jobs`, {
         headers: getAuthHeaders()
       });
       if (!res.ok) throw new Error('Failed to fetch marketplace jobs');
@@ -53,7 +53,7 @@ export function Marketplace() {
     if (!selectedJob) return;
 
     try {
-      const res = await fetch(\`\${API_URL}/quotes/\`, {
+      const res = await fetch(`${API_URL}/quotes/`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({
